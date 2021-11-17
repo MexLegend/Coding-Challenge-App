@@ -1,8 +1,3 @@
-
-
-// apiData
-// loadApiData
-
 import { Dispatch } from "redux";
 import { URI } from "../../api/api";
 import { ApiData } from '../../interfaces/appInterfaces';
