@@ -88,6 +88,9 @@ export const loginScreenStyles = StyleSheet.create({
         height: 48,
         paddingLeft: 24
     },
+    textLeft: {
+        textAlign: "left"
+    },
     title: {
         color: "#373A4D",
         fontSize: 28,

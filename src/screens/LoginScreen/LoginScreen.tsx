@@ -1,34 +1,38 @@
 import React, { useState } from 'react';
-import { useForm } from '../../hooks/useForm';
+import { KeyboardAvoidingView, Text, TextInput, View, Platform, Keyboard, ScrollView, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeError, startLogin } from '../../redux/actions/authAction';
-import { KeyboardAvoidingView, Text, TextInput, View, Platform, Keyboard } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+
+import { AppState, LoginData } from '../../interfaces/appInterfaces';
+import { removeError, startLogin } from '../../redux/actions/authAction';
 import { loginScreenStyles } from './loginScreenStyles';
-import { AppState } from '../../interfaces/appInterfaces';
+import { Formik, FormikHelpers } from 'formik';
+import { object, string } from 'yup';
 
 export const LoginScreen = () => {
 
     const dispatch = useDispatch();
-    const { errorMessage } = useSelector(({ AUTH }: AppState) => AUTH);
-    const { apiData } = useSelector(({ APIDATA }: AppState) => APIDATA);
+    const { errorMessage, status } = useSelector(({ AUTH }: AppState) => AUTH);
 
-    const { username, password, onChange } = useForm({
-        username: '',
-        password: ''
+    const initialValues: LoginData = {
+        password: '',
+        username: ''
+    }
+
+    // Form Validation
+    const validationSchema = () => object({
+        password: string().required('The password is required'),
+        username: string().required('The email is required')
     });
 
     const [showPassword, setShowPassword] = useState(true);
 
-    const onLogIn = async () => {
+    const onLogIn = async ({ password, username }: LoginData, { resetForm }: FormikHelpers<LoginData>) => {
         dispatch(removeError());
         Keyboard.dismiss();
         dispatch(startLogin({ password, username }));
+        if (status === "authenticated") resetForm();
     }
-
-    console.log(apiData);
-    
 
     return (
         // {/* Container */}
@@ -42,56 +46,92 @@ export const LoginScreen = () => {
                     <Text style={loginScreenStyles.title}>Log In</Text>
                     <Text style={loginScreenStyles.subtitle}>Welcome back</Text>
                 </View>
-                {/* Form Container */}
-                <View style={loginScreenStyles.formContainer}>
-                    {/* Formfield */}
-                    <View style={{ marginBottom: 21 }}>
-                        <Text style={loginScreenStyles.label}>Email</Text>
-                        <TextInput
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            keyboardType="email-address"
-                            onChangeText={(value) => onChange(value, 'username')}
-                            onSubmitEditing={onLogIn}
-                            placeholder="email"
-                            placeholderTextColor='#8F92A9'
-                            style={loginScreenStyles.textInput}
-                            value={username} />
-                    </View>
-                    {/* Formfield */}
-                    <View>
-                        <Text style={loginScreenStyles.label}>Password</Text>
-                        <View style={loginScreenStyles.conpoundFormField}>
-                            <TextInput
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                onChangeText={(value) => onChange(value, 'password')}
-                                onSubmitEditing={onLogIn} placeholder="password"
-                                placeholderTextColor='#8F92A9'
-                                secureTextEntry={showPassword}
-                                style={[loginScreenStyles.conpoundTextInput, loginScreenStyles.textInput]}
-                                value={password} />
-                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                                <IonIcon name={showPassword ? "eye" : "eye-off"} size={22} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/* Forgot Password  */}
-                    <TouchableOpacity
-                        style={loginScreenStyles.forgotPasswordButton}
-                        onPress={() => { }}>
-                        <Text style={loginScreenStyles.forgotPasswordText}>Forgot Password</Text>
-                    </TouchableOpacity>
-                    {/* Submit Button */}
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={onLogIn}
-                        style={loginScreenStyles.submitButton}>
-                        <Text style={loginScreenStyles.submitButtonText}>Log in</Text>
-                    </TouchableOpacity>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onLogIn}
+                    validationSchema={validationSchema}
+                >
+                    {({
+                        handleBlur,
+                        handleSubmit,
+                        setFieldValue,
+                        errors,
+                        isSubmitting,
+                        isValidating,
+                        values }) => (
 
-                    {(errorMessage !== "") && <Text style={loginScreenStyles.errorMessage}>{errorMessage}</Text>}
-                </View>
+                        // Form Container
+                        <View style={loginScreenStyles.formContainer}>
+                            {/* Formfield */}
+                            <View style={{ marginBottom: 21 }}>
+                                <Text style={loginScreenStyles.label}>Email</Text>
+                                <TextInput
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    keyboardType="email-address"
+                                    onBlur={handleBlur('username')}
+                                    onChangeText={value => setFieldValue('username', value)}
+                                    onSubmitEditing={handleSubmit}
+                                    placeholder="email"
+                                    placeholderTextColor='#8F92A9'
+                                    style={loginScreenStyles.textInput}
+                                    value={values.username} />
+                                {/* Required Username Error Message */}
+                                {
+                                    errors.username &&
+                                    <Text
+                                        style={[loginScreenStyles.errorMessage, loginScreenStyles.textLeft]}>
+                                        {errors.username}
+                                    </Text>
+                                }
+                            </View>
+                            {/* Formfield */}
+                            <View>
+                                <Text style={loginScreenStyles.label}>Password</Text>
+                                <View style={loginScreenStyles.conpoundFormField}>
+                                    <TextInput
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        onBlur={handleBlur('password')}
+                                        onChangeText={value => setFieldValue('password', value)}
+                                        onSubmitEditing={handleSubmit} placeholder="password"
+                                        placeholderTextColor='#8F92A9'
+                                        secureTextEntry={showPassword}
+                                        style={[loginScreenStyles.conpoundTextInput, loginScreenStyles.textInput]}
+                                        value={values.password} />
+                                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                        <IonIcon name={showPassword ? "eye" : "eye-off"} size={22} />
+                                    </TouchableOpacity>
+                                </View>
+                                {/* Required Password Error Message */}
+                                {
+                                    errors.password &&
+                                    <Text
+                                        style={[loginScreenStyles.errorMessage, loginScreenStyles.textLeft]}>
+                                        {errors.password}
+                                    </Text>
+                                }
+                            </View>
+                            {/* Forgot Password  */}
+                            <TouchableOpacity
+                                style={loginScreenStyles.forgotPasswordButton}
+                                onPress={() => { }}>
+                                <Text style={loginScreenStyles.forgotPasswordText}>Forgot Password</Text>
+                            </TouchableOpacity>
+                            {/* Submit Button */}
+                            <TouchableOpacity
+                                disabled={isSubmitting || isValidating}
+                                activeOpacity={0.8}
+                                onPress={handleSubmit}
+                                style={loginScreenStyles.submitButton}>
+                                <Text style={loginScreenStyles.submitButtonText}>Log in</Text>
+                            </TouchableOpacity>
+
+                            {(errorMessage !== "") && <Text style={loginScreenStyles.errorMessage}>{errorMessage}</Text>}
+                        </View>
+                    )}
+                </Formik>
+
                 {/* Sign Up */}
                 <View style={loginScreenStyles.signup}>
                     <Text style={{ color: 'black' }}>Don't have an account?</Text>
