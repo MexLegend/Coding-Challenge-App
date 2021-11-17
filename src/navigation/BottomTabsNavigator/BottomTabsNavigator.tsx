@@ -26,7 +26,7 @@ export const BottomTabsNavigator = () => {
             ),
             // Tab Bar Icons -> Home Icon
             tabBarIcon: () => {
-                return <IonIcon name="home-outline" size={26} style={{ color: '#373A4D' }} />
+                return <IonIcon name="home-outline" size={26} style={{ color: "#373A4D" }} />
             },
             // Tab Bar Labels -> Home
             tabBarLabel: () => {
@@ -38,8 +38,9 @@ export const BottomTabsNavigator = () => {
         })}>
             {/* Home Screen Tab */}
             <Tab.Screen name="Home" component={HomeScreen} options={{
-                title: 'My Photos',
+                title: "My Photos",
                 headerStyle: bottomTabsNavigatorStyles.headerStyle,
+                headerTitleAlign: "left",
                 headerTitleStyle: bottomTabsNavigatorStyles.headerTitleStyle
             }} />
         </Tab.Navigator>

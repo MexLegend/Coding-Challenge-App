@@ -23,13 +23,13 @@ export const Navigation = () => {
     <Stack.Navigator
       screenOptions={{
         cardStyle: {
-          backgroundColor: 'white',
+          backgroundColor: "white",
         },
         headerShown: false
       }}
     >
       {
-        (status !== 'authenticated')
+        (status !== "authenticated")
           ? (<Stack.Screen name="LoginScreen" component={LoginScreen} />)
           : (<Stack.Screen name="BottomTabsNavigator" component={BottomTabsNavigator} />)
       }

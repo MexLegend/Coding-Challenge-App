@@ -9,7 +9,7 @@ export const bottomTabsNavigatorStyles = StyleSheet.create({
         fontWeight: "400"
     },
     headerStyle: {
-        borderBottomColor: '#ECEDF2',
+        borderBottomColor: "#ECEDF2",
         borderBottomWidth: 1,
         height: 96,
     },
@@ -19,13 +19,13 @@ export const bottomTabsNavigatorStyles = StyleSheet.create({
         paddingLeft: 8
     },
     tabBarLabelStyle: {
-        color: '#373A4D',
+        color: "#373A4D",
         fontSize: 12
     },
     tabBarStyle: {
-        alignItems: 'center',
+        alignItems: "center",
         flexDirection: "column",
-        justifyContent: 'center',
+        justifyContent: "center",
         height: 70,
         paddingBottom: 10,
     }
