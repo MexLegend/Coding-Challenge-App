@@ -138,6 +138,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BD84FADD0D114E1F8A646BC8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		E233CBF5F47BEE60B243DCF8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,14 +157,6 @@
 			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		BD84FADD0D114E1F8A646BC8 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
